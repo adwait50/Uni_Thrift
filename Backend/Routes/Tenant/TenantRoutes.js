@@ -5,59 +5,69 @@ const Tenant = require('../../Models/Tenant');
 const jwt = require('jsonwebtoken');
 const tenantAuth = require('../../Middlewares/authTenantMiddleware.js');
 const sendEmail = require('../../utils/emailService.js');
-
-
+const tenantUpload = require('../../Utils/multer.js');
+const fs = require('fs');
+const path = require('path');
 const generateOTP = () => {
     return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
-router.post('/signup', async (req, res) => {
-    try {
-        const {
-            name,
-            email,
-            phoneNumber,
-            currentAddress,
-            proofAadhaar,
-            proofOfAddress,
-            password
-        } = req.body;
 
-        const existingTenant = await Tenant.findOne({ email });
-        if (existingTenant) {
-            return res.status(400).json({ message: 'Tenant already exists with this email' });
+const uploadsDir = path.join(__dirname, '../../uploads/tenant-documents');
+if (!fs.existsSync(uploadsDir)){
+    fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+router.post('/signup', tenantUpload.fields([
+    { name: 'proofAadhaar', maxCount: 1 },
+    { name: 'proofOfAddress', maxCount: 1 }
+]), async (req, res) => {
+    try {
+        const { name, email, phoneNumber, currentAddress, password } = req.body;
+
+        if (!req.files?.proofAadhaar || !req.files?.proofOfAddress) {
+            return res.status(400).json({ message: 'Both Aadhaar and address proof are required' });
         }
 
-        const hashedPassword = await bcrypt.hash(String(password), 10);
-        const otp = generateOTP();
-        const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
+        
+        const existingTenant = await Tenant.findOne({ email });
+        if (existingTenant) {
+            // Delete uploaded files
+            Object.values(req.files).forEach(file => {
+                fs.unlinkSync(file[0].path);
+            });
+            return res.status(400).json({ message: 'Email already registered' });
+        }
 
+        
         const tenant = new Tenant({
             name,
             email,
             phoneNumber,
             currentAddress,
-            proofAadhaar,
-            proofOfAddress,
-            password: hashedPassword,
-            verificationOTP: otp,
-            otpExpiry
+            password: await bcrypt.hash(String(password), 10),
+            proofAadhaar: req.files.proofAadhaar[0].path,
+            proofOfAddress: req.files.proofOfAddress[0].path,
+            verificationOTP: generateOTP(),
+            otpExpiry: new Date(Date.now() + 5 * 60 * 1000)
         });
 
         await tenant.save();
 
-        // Send verification email
+        
         await sendEmail(
             email,
             "Email Verification",
-            `Your verification code is: ${otp}\nThis code will expire in 10 minutes.`
+            `Your verification code is: ${tenant.verificationOTP}\nThis code will expire in 5 minutes.`
         );
 
-        res.status(201).json({ message: 'Tenant registered successfully. Please check your email for verification code.' });
+        res.status(201).json({ 
+            message: 'Registration successful. Please check your email for verification code.'
+        });
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Server error' });
+        console.error('Signup error:', error);
+        res.status(500).json({ message: 'Registration failed' });
     }
 });
 

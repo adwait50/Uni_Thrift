@@ -5,60 +5,71 @@ const Student = require('../../Models/Student');
 const jwt = require('jsonwebtoken');
 const studentAuth = require('../../Middlewares/authStudentMiddleware.js');
 const sendEmail = require('../../utils/emailService.js');
+const tenantUpload = require('../../Utils/multer.js');
+const fs = require('fs');
+const path = require('path');
+
+// Create uploads directory if it doesn't exist
+const uploadsDir = path.join(__dirname, '../../uploads/student-documents');
+if (!fs.existsSync(uploadsDir)){
+    fs.mkdirSync(uploadsDir, { recursive: true });
+}
 
 const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
+// Signup with admission proof upload
+router.post('/signup', tenantUpload.single('proofOfAdmission'), async (req, res) => {
+    try {
+        const { name, studentEmail, phoneNumber, currentAddress, password } = req.body;
 
-router.post('/signup', async (req, res) => {
-  try {
-    const {
-      name,
-      studentEmail,
-      phoneNumber,
-      currentAddress,
-      proofOfAdmission,
-      password
-    } = req.body;
+        // Check if admission proof was uploaded
+        if (!req.file) {
+            return res.status(400).json({ message: 'Admission proof is required' });
+        }
 
-    const existingStudent = await Student.findOne({ studentEmail });
-    if (existingStudent) {
-      return res.status(400).json({ message: 'Student already exists with this email' });
+        // Check existing student
+        const existingStudent = await Student.findOne({ studentEmail });
+        if (existingStudent) {
+            // Delete uploaded file
+            fs.unlinkSync(req.file.path);
+            return res.status(400).json({ message: 'Email already registered' });
+        }
+
+        // Create new student
+        const student = new Student({
+            name,
+            studentEmail,
+            phoneNumber,
+            currentAddress,
+            password: await bcrypt.hash(String(password), 10),
+            proofOfAdmission: req.file.path,
+            verificationOTP: generateOTP(),
+            otpExpiry: new Date(Date.now() + 5 * 60 * 1000)
+        });
+
+        await student.save();
+
+        // Send verification email
+        await sendEmail(
+            studentEmail,
+            "Email Verification",
+            `Your verification code is: ${student.verificationOTP}\nThis code will expire in 5 minutes.`
+        );
+
+        res.status(201).json({ 
+            message: 'Registration successful. Please check your email for verification code.'
+        });
+
+    } catch (error) {
+        // Clean up file if error occurs
+        if (req.file) {
+            fs.unlinkSync(req.file.path);
+        }
+        console.error('Signup error:', error);
+        res.status(500).json({ message: 'Registration failed' });
     }
-
-    const hashedPassword = await bcrypt.hash(String(password), 10);
-    const otp = generateOTP();
-    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
-
-    const student = new Student({
-      name,
-      studentEmail,
-      phoneNumber,
-      currentAddress,
-      proofOfAdmission,
-      password: hashedPassword,
-      verificationOTP: otp,
-      otpExpiry
-    });
-
-    await student.save();
-
-    await sendEmail(
-        studentEmail,
-        "Email Verification",
-        `Your verification code is: ${otp}\nThis code will expire in 10 minutes.`
-    );
-
-    res.status(201).json({ 
-      message: 'Student registered successfully. Please check your email for verification code.' 
-    });
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
 });
-
 
 router.post('/verify-email', async (req, res) => {
   try {

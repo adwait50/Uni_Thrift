@@ -23,7 +23,7 @@ const StudentSchema = new mongoose.Schema({
     required: true
   },
   proofOfAdmission: {
-    type: String,  // This will store the file path/URL of the uploaded document
+    type: String,  
     required: true
   },
   role: {
