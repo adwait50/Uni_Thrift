@@ -29,6 +29,26 @@ const StudentSchema = new mongoose.Schema({
   role: {
     type: String,
     default: 'student'
+  },
+  isVerified: {
+    type: Boolean,
+    default: false
+  },
+  verificationOTP: {
+    type: String,
+    default: null
+  },
+  otpExpiry: {
+    type: Date,
+    default: null
+  },
+  resetPasswordOTP: {
+    type: String,
+    default: null
+  },
+  resetPasswordExpiry: {
+    type: Date,
+    default: null
   }
 }, { timestamps: true });
 
