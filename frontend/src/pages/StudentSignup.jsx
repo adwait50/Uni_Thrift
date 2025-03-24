@@ -9,20 +9,24 @@ function StudentSignup() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [currentAddress, setCurrentAddress] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const fileInputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [proofOfAdmission, setproofOfAdmission] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (currentStep === 1) {
-      setShowOtpModal(true);
+      const formData = new FormData();
+      formData.append("fullName", fullName);
+      formData.append("email", email);
+      formData.append("phoneNumber", phoneNumber);
+      formData.append("currentAddress", currentAddress);
+      formData.append("password", password);
+      formData.append("selectedFile", selectedFile);
+      // Send formData to the server
     }
   };
 
@@ -194,7 +198,7 @@ function StudentSignup() {
                     />
                   </div>
                 </div>
-                {/* <div>
+                <div>
                   <label className="block text-gray-300 mb-2">
                     Admission Proof
                   </label>
@@ -219,7 +223,7 @@ function StudentSignup() {
                       PNG, JPG, PDF up to 10MB
                     </p>
                   </div>
-                </div> */}
+                </div>
 
                 <div className="flex items-center">
                   <input

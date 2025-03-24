@@ -38,16 +38,8 @@ const TenantSignup = () => {
     e.preventDefault();
     setCurrentStep("confirmation");
   };
-
-  const handleGoogleSignUp = () => {
-    console.log("Google sign up");
-  };
-
-  const handleFacebookSignUp = () => {
-    console.log("Facebook sign up");
-  };
   const SignupForm = (
-    <div className="w-full max-w-xl bg-gray-800 rounded-lg shadow-xl p-8">
+    <div className="w-full max-w-xl bg-[#1e2435] rounded-lg shadow-xl p-8">
       <h1 className="text-2xl font-semibold text-white mb-6">Create Account</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -67,7 +59,6 @@ const TenantSignup = () => {
             />
           </div>
         </div>
-
         <div>
           <label htmlFor="email" className="block text-gray-300 mb-2">
             Email Address
@@ -85,7 +76,6 @@ const TenantSignup = () => {
             />
           </div>
         </div>
-
         <div>
           <label htmlFor="password" className="block text-gray-300 mb-2">
             Password
@@ -112,7 +102,22 @@ const TenantSignup = () => {
             </button>
           </div>
         </div>
-
+        <div>
+          <label htmlFor="propertyAddress" className="block text-gray-300 mb-2">
+            Property Address
+          </label>
+          <div className="relative">
+            <i className="fas fa-home absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            <input
+              id="propertyAddress"
+              type="text"
+              value={propertyAddress}
+              onChange={(e) => setPropertyAddress(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#2a2f42] text-white border-none focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              placeholder="Enter property address"
+            />
+          </div>
+        </div>
         <div>
           <label htmlFor="phoneNumber" className="block text-gray-300 mb-2">
             Phone Number
@@ -130,29 +135,38 @@ const TenantSignup = () => {
             />
           </div>
         </div>
-
-        <div>
-          <label
-            htmlFor="propertyAddress"
-            required
-            className="block text-gray-300 mb-2"
-          >
-            Property Address
-          </label>
-          <div className="relative">
-            <i className="fas fa-home absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-            <input
-              id="propertyAddress"
-              required
-              type="text"
-              value={propertyAddress}
-              onChange={(e) => setPropertyAddress(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#2a2f42] text-white border-none focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              placeholder="Enter property address"
-            />
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="aadhar" className="block text-gray-300 mb-2">
+              Aadhar Card
+            </label>
+            <div className="relative">
+              <i className="fas fa-id-card absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              <input
+                id="aadhar"
+                type="file"
+                accept="image/*"
+                className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#2a2f42] text-white border-none focus:ring-2 focus:ring-blue-500 focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+                required
+              />
+            </div>
+          </div>
+          <div>
+            <label htmlFor="addressProof" className="block text-gray-300 mb-2">
+              Address Proof
+            </label>
+            <div className="relative">
+              <i className="fas fa-file-image absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              <input
+                id="addressProof"
+                type="file"
+                accept="image/*"
+                className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#2a2f42] text-white border-none focus:ring-2 focus:ring-blue-500 focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+                required
+              />
+            </div>
           </div>
         </div>
-
         <div className="space-y-3">
           <label className="flex items-center space-x-3">
             <input
@@ -169,7 +183,6 @@ const TenantSignup = () => {
             </span>
           </label>
         </div>
-
         <button
           type="submit"
           className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 !rounded-button whitespace-nowrap"
@@ -180,18 +193,14 @@ const TenantSignup = () => {
 
       <p className="text-center mt-6 text-gray-400">
         Already have an account?{" "}
-        <Link
-          to={"/tenant-login"}
-          className="text-blue-500 hover:text-blue-400"
-        >
+        <a href="/login" className="text-blue-500 hover:text-blue-400">
           Sign in
-        </Link>
+        </a>
       </p>
     </div>
   );
-
   const OtpVerification = (
-    <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-xl p-8">
+    <div className="w-full max-w-md bg-[#1e2435] rounded-lg shadow-xl p-8">
       <h1 className="text-2xl font-semibold text-white mb-6">
         OTP Verification
       </h1>
@@ -227,9 +236,8 @@ const TenantSignup = () => {
       </div>
     </div>
   );
-
   const ConfirmationPage = (
-    <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-xl p-8 text-center">
+    <div className="w-full max-w-md bg-[#1e2435] rounded-lg shadow-xl p-8 text-center">
       <div className="mb-6">
         <i className="fas fa-check-circle text-6xl text-green-500"></i>
       </div>
@@ -240,18 +248,18 @@ const TenantSignup = () => {
         Thank you for registering with us. Your account has been successfully
         created.
       </p>
-      <Link>
-        <button className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 !rounded-button whitespace-nowrap">
-          Go to Dashboard
-        </button>
-      </Link>
+      <button
+        onClick={() => (window.location.href = "/dashboard")}
+        className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 !rounded-button whitespace-nowrap"
+      >
+        Go to Dashboard
+      </button>
     </div>
   );
-
   return (
-    <div>
+    <div className="h-screen bg-gray-900">
       <Navbar />
-      <div className="min-h-screen w-full bg-gray-900 flex items-center justify-center p-4">
+      <div className="min-h-screen w-full bg-[#1a1f2e] flex items-center justify-center p-4">
         {currentStep === "signup" && SignupForm}
         {currentStep === "otp" && OtpVerification}
         {currentStep === "confirmation" && ConfirmationPage}
