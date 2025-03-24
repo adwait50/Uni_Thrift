@@ -9,13 +9,14 @@ import {
   Store,
   Sun,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 function Navbar({ isDarkMode, setIsDarkMode }) {
   return (
     <nav
-      className={`sticky top-0 z-50 ${
-        isDarkMode ? "bg-gray-900 text-white" : "bg-white text-gray-900"
-      } shadow-md`}
+      className={`sticky top-0 z-50 
+         bg-gray-800 text-white
+       shadow-md`}
     >
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
@@ -28,47 +29,35 @@ function Navbar({ isDarkMode, setIsDarkMode }) {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <a href="/" className="hover:text-blue-500 transition">
-              Home
-            </a>
-            <a
-              href="/marketplace"
-              className="flex items-center space-x-1 hover:text-blue-500 transition"
-            >
+            <Link className="hover:text-blue-500 transition">Home</Link>
+            <Link className="flex items-center space-x-1 hover:text-blue-500 transition">
               <Store className="w-4 h-4" />
               <span>Buy & Sell</span>
-            </a>
-            <a
-              href="/housing"
-              className="flex items-center space-x-1 hover:text-blue-500 transition"
-            >
+            </Link>
+            <Link className="flex items-center space-x-1 hover:text-blue-500 transition">
               <BookMarked className="w-4 h-4" />
               <span>Housing</span>
-            </a>
-            <a
-              href="/community"
-              className="flex items-center space-x-1 hover:text-blue-500 transition"
-            >
+            </Link>
+            <Link className="flex items-center space-x-1 hover:text-blue-500 transition">
               <MessageSquare className="w-4 h-4" />
               <span>Community</span>
-            </a>
-            <button
-              onClick={() => setIsDarkMode(!isDarkMode)}
-              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition"
-            >
-              {isDarkMode ? (
-                <Sun className="w-5 h-5" />
-              ) : (
-                <Moon className="w-5 h-5" />
-              )}
-            </button>
-            <a
-              href="/login"
+            </Link>
+
+            <Link
+              to={"/student-login"}
               className="flex items-center space-x-1 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
             >
               <LogIn className="w-4 h-4" />
-              <span>Login</span>
-            </a>
+              <span>Students</span>
+            </Link>
+            <Link
+              to={"/tenant-login"}
+              className="flex items-center space-x-1 bg-[#1f2937] text-white px-4 py-2 rounded-lg hover:bg-[#263244] transition"
+            >
+              <LogIn className="w-4 h-4" />
+              <span>Tenant</span>
+            </Link>
+            <a href="/"></a>
           </div>
 
           {/* Mobile Menu Button */}
