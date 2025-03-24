@@ -73,8 +73,8 @@ function TenantForgotpassword() {
                     Enter Verification Code
                   </h2>
                   <p className="text-gray-300 mb-6">
-                    We've sent a verification code to your email address. Please
-                    enter the code below.
+                    We've sent a verification code to {email}. Please enter the
+                    code below.
                   </p>
                   <div className="flex justify-center gap-3 mb-6">
                     {otp.map((digit, index) => (

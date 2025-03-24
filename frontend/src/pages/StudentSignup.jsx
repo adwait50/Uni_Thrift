@@ -17,6 +17,7 @@ function StudentSignup() {
   const [showOtpModal, setShowOtpModal] = useState(false);
   const fileInputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [proofOfAdmission, setproofOfAdmission] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -173,42 +174,27 @@ function StudentSignup() {
                     </button>
                   </div>
                 </div>
-
-                {/* <div>
+                <div>
                   <label
-                    htmlFor="confirmPassword"
+                    htmlFor="fullName"
                     className="block text-gray-300 mb-2"
                   >
-                    Confirm Password
+                    Full Name
                   </label>
                   <div className="relative">
-                    <i className="fas fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <i className="fas fa-user absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
                     <input
-                      id="confirmPassword"
-                      type={showConfirmPassword ? "text" : "password"}
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full pl-10 pr-10 py-3 rounded-lg bg-[#2a2f42] text-white border-none focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                      placeholder="Confirm your password"
+                      id="fullName"
+                      type="text"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#2a2f42] text-white border-none focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                      placeholder="Enter your full name"
                       required
                     />
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer"
-                    >
-                      <i
-                        className={`fas ${
-                          showConfirmPassword ? "fa-eye-slash" : "fa-eye"
-                        }`}
-                      ></i>
-                    </button>
                   </div>
-                </div> */}
-
-                <div>
+                </div>
+                {/* <div>
                   <label className="block text-gray-300 mb-2">
                     Admission Proof
                   </label>
@@ -233,7 +219,7 @@ function StudentSignup() {
                       PNG, JPG, PDF up to 10MB
                     </p>
                   </div>
-                </div>
+                </div> */}
 
                 <div className="flex items-center">
                   <input

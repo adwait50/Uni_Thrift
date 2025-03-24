@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 function StudentLogin() {
   const [email, setEmail] = useState("");
@@ -9,9 +10,20 @@ function StudentLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const [showForgotModal, setShowForgotModal] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/students/login`,
+        { studentEmail: email, password }
+      );
+      if (response.status === 200) {
+        localStorage.setItem("token", response.data.token);
+      }
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
   };
   return (
     <div className="h-screen bg-gray-900">
