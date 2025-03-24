@@ -35,7 +35,7 @@ function Footer({ isDarkMode }) {
             <ul className="space-y-2">
               <li>
                 <a
-                  href="/marketplace"
+                  href="/"
                   className="flex items-center space-x-2 hover:text-blue-500 transition"
                 >
                   <Store className="w-4 h-4" />
@@ -44,7 +44,7 @@ function Footer({ isDarkMode }) {
               </li>
               <li>
                 <a
-                  href="/housing"
+                  href="/"
                   className="flex items-center space-x-2 hover:text-blue-500 transition"
                 >
                   <BookMarked className="w-4 h-4" />
@@ -53,7 +53,7 @@ function Footer({ isDarkMode }) {
               </li>
               <li>
                 <a
-                  href="/community"
+                  href="/"
                   className="flex items-center space-x-2 hover:text-blue-500 transition"
                 >
                   <MessageSquare className="w-4 h-4" />

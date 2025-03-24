@@ -13,7 +13,7 @@ import Footer from "../components/Footer";
 import ServiceCard from "../components/ServiceCard";
 
 const LandingPage = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
   const services = [
     {
