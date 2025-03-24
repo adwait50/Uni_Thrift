@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import { Link } from "react-router-dom";
 
-function ForgotPassword() {
+function TenantForgotpassword() {
   const [currentStep, setCurrentStep] = useState(1);
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState(["", "", "", ""]);
@@ -217,4 +217,4 @@ function ForgotPassword() {
   );
 }
 
-export default ForgotPassword;
+export default TenantForgotpassword;

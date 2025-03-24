@@ -50,7 +50,10 @@ function Navbar({ isDarkMode, setIsDarkMode }) {
               <LogIn className="w-4 h-4" />
               <span>Students</span>
             </Link>
-            <Link className="flex items-center space-x-1 bg-[#1f2937] text-white px-4 py-2 rounded-lg hover:bg-[#263244] transition">
+            <Link
+              to={"/tenant-login"}
+              className="flex items-center space-x-1 bg-[#1f2937] text-white px-4 py-2 rounded-lg hover:bg-[#263244] transition"
+            >
               <LogIn className="w-4 h-4" />
               <span>Tenant</span>
             </Link>
