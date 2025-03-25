@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import Navbar from "../components/Navbar";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 function StudentSignup() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -11,22 +12,49 @@ function StudentSignup() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
-  const [otp, setOtp] = useState(["", "", "", ""]);
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const fileInputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (currentStep === 1) {
-      const formData = new FormData();
-      formData.append("fullName", fullName);
-      formData.append("email", email);
-      formData.append("phoneNumber", phoneNumber);
-      formData.append("currentAddress", currentAddress);
-      formData.append("password", password);
-      formData.append("selectedFile", selectedFile);
-      // Send formData to the server
+      try {
+        setIsLoading(true);
+        const formData = new FormData();
+        formData.append("name", fullName);
+        formData.append("studentEmail", email);
+        formData.append("phoneNumber", phoneNumber);
+        formData.append("currentAddress", currentAddress);
+        formData.append("password", password);
+        formData.append("proofOfAdmission", selectedFile);
+
+        const response = await axios.post(
+          `${import.meta.env.VITE_BASE_URL}/api/students/signup`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        setShowOtpModal(true);
+        if (response === 201) {
+          console.log(response.data.message);
+        }
+        console.log(response);
+      } catch (error) {
+        setError(
+          error.response?.data?.message ||
+            "An error occurred. Please try again."
+        );
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -43,15 +71,28 @@ function StudentSignup() {
     setOtp(newOtp);
 
     // Auto-focus next input
-    if (value && index < 3) {
+    if (value && index < 5) {
       const nextInput = document.getElementById(`otp-${index + 1}`);
       nextInput?.focus();
     }
   };
 
-  const handleVerifyOtp = () => {
-    setShowOtpModal(false);
-    setCurrentStep(2);
+  const handleVerifyOtp = async () => {
+    try {
+      setIsLoading(true);
+      const otpString = otp.join("");
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/students/verify-email`,
+        { studentEmail: email, otp: otpString }
+      );
+      console.log(response);
+      setShowOtpModal(false);
+      setCurrentStep(2);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
     <div className="h-screen bg-gray-900">
@@ -178,26 +219,7 @@ function StudentSignup() {
                     </button>
                   </div>
                 </div>
-                <div>
-                  <label
-                    htmlFor="fullName"
-                    className="block text-gray-300 mb-2"
-                  >
-                    Full Name
-                  </label>
-                  <div className="relative">
-                    <i className="fas fa-user absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                    <input
-                      id="fullName"
-                      type="text"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#2a2f42] text-white border-none focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                      placeholder="Enter your full name"
-                      required
-                    />
-                  </div>
-                </div>
+
                 <div>
                   <label className="block text-gray-300 mb-2">
                     Admission Proof
@@ -243,7 +265,11 @@ function StudentSignup() {
                     </button>
                   </label>
                 </div>
-
+                <div className="mx-auto w-full flex justify-center items-center">
+                  {error && (
+                    <div className="text-red-500 text-sm mt-2">{error}</div>
+                  )}
+                </div>
                 <button
                   type="submit"
                   disabled={!agreeToTerms}
@@ -253,7 +279,7 @@ function StudentSignup() {
                       : "bg-gray-600 cursor-not-allowed"
                   }`}
                 >
-                  Create Account
+                  {isLoading ? "Loading..." : "Create Account"}
                 </button>
               </>
             )}
@@ -288,7 +314,6 @@ function StudentSignup() {
             </Link>
           </p>
         </div>
-
         {/* OTP Verification Modal */}
         {showOtpModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
@@ -329,7 +354,7 @@ function StudentSignup() {
                   onClick={handleVerifyOtp}
                   className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 !rounded-button whitespace-nowrap cursor-pointer"
                 >
-                  Verify
+                  {isLoading ? "Loading..." : "Verify"}
                 </button>
               </div>
             </div>

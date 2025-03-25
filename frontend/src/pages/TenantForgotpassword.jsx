@@ -1,27 +1,66 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 function TenantForgotpassword() {
   const [currentStep, setCurrentStep] = useState(1);
   const [email, setEmail] = useState("");
-  const [otp, setOtp] = useState(["", "", "", ""]);
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setCurrentStep(currentStep + 1);
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/tenants/forgot-password`,
+        { email }
+      );
+      console.log(response);
+      setCurrentStep(currentStep + 1);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleOtpSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/tenants/verify-reset-otp`,
+        { email, otp: otp.join("") }
+      );
+      console.log(response);
+      setCurrentStep(currentStep + 1);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+    try {
+      console.log(otp);
+      const otpString = otp.join("");
+      console.log(otpString);
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/tenants/reset-password`,
+        { email, otp: otpString, newPassword: confirmPassword }
+      );
+      console.log(response);
+      setCurrentStep(currentStep + 1);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const handleOtpChange = (index, value) => {
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
 
-    if (value && index < 3) {
+    if (value && index < 5) {
       const nextInput = document.getElementById(`otp-${index + 1}`);
       nextInput?.focus();
     }
@@ -65,7 +104,8 @@ function TenantForgotpassword() {
                 </button>
               </>
             )}
-
+          </form>
+          <form onSubmit={handleOtpSubmit}>
             {currentStep === 2 && (
               <>
                 <div>
@@ -106,7 +146,8 @@ function TenantForgotpassword() {
                 </button>
               </>
             )}
-
+          </form>
+          <form onSubmit={handlePasswordChange}>
             {currentStep === 3 && (
               <>
                 <div>
@@ -141,7 +182,7 @@ function TenantForgotpassword() {
                   </div>
                 </div>
 
-                <div>
+                <div className="mt-7">
                   <label
                     htmlFor="confirmPassword"
                     className="block text-gray-300 mb-2"
@@ -177,33 +218,33 @@ function TenantForgotpassword() {
 
                 <button
                   type="submit"
-                  className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 !rounded-button whitespace-nowrap cursor-pointer"
+                  className="w-full py-3 mt-8 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 !rounded-button whitespace-nowrap cursor-pointer"
                 >
                   Reset Password
                 </button>
               </>
             )}
-
-            {currentStep === 4 && (
-              <div className="text-center">
-                <i className="fas fa-check-circle text-green-500 text-5xl mb-4"></i>
-                <h2 className="text-xl font-semibold text-white mb-2">
-                  Password Reset Successful!
-                </h2>
-                <p className="text-gray-400 mb-6">
-                  Your password has been reset successfully.
-                </p>
-                <Link to="/student-login">
-                  <button
-                    type="button"
-                    className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 !rounded-button whitespace-nowrap cursor-pointer"
-                  >
-                    Back to Login
-                  </button>
-                </Link>
-              </div>
-            )}
           </form>
+
+          {currentStep === 4 && (
+            <div className="text-center">
+              <i className="fas fa-check-circle text-green-500 text-5xl mb-4"></i>
+              <h2 className="text-xl font-semibold text-white mb-2">
+                Password Reset Successful!
+              </h2>
+              <p className="text-gray-400 mb-6">
+                Your password has been reset successfully.
+              </p>
+              <Link to="/student-login">
+                <button
+                  type="button"
+                  className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 !rounded-button whitespace-nowrap cursor-pointer"
+                >
+                  Back to Login
+                </button>
+              </Link>
+            </div>
+          )}
 
           <p className="text-center mt-6 text-gray-400">
             Remember your password?{" "}

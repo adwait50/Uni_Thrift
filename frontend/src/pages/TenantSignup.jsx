@@ -7,14 +7,13 @@ const TenantSignup = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [propertyAddress, setPropertyAddress] = useState("");
   const [agreeToTerms, setAgreeToTerms] = useState(false);
-  const [receiveUpdates, setReceiveUpdates] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [aadhar, setAadhar] = useState(null);
+  const [address, setAddress] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -31,6 +30,12 @@ const TenantSignup = () => {
         const nextInput = document.getElementById(`otp-${index + 1}`);
         nextInput?.focus();
       }
+    }
+  };
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
     }
   };
 
@@ -146,6 +151,7 @@ const TenantSignup = () => {
                 id="aadhar"
                 type="file"
                 accept="image/*"
+                onChange={handleFileChange}
                 className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#2a2f42] text-white border-none focus:ring-2 focus:ring-blue-500 focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700"
                 required
               />
@@ -161,6 +167,7 @@ const TenantSignup = () => {
                 id="addressProof"
                 type="file"
                 accept="image/*"
+                onChange={handleFileChange}
                 className="w-full pl-10 pr-4 py-3 rounded-lg bg-[#2a2f42] text-white border-none focus:ring-2 focus:ring-blue-500 focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700"
                 required
               />

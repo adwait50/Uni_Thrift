@@ -3,21 +3,31 @@ import { Link, useNavigate } from "react-router-dom";
 import { Building2, Mail, Lock, Shield } from "lucide-react";
 import toast from "react-hot-toast";
 import Navbar from "../components/Navbar";
+import axios from "axios";
 
 function TenantLogin() {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isLogin) {
-      // Handle login
-      toast.success("Login successful!");
-      //   navigate("/tenant/dashboard");
-      navigate("/otp");
-    } else {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/tenants/login`,
+        { email, password }
+      );
+      if (response.status === 200) {
+        console.log(response.data);
+        localStorage.setItem("token", response.data.token);
+      }
+    } catch (error) {
+      setError(
+        error.response?.data?.message || "An error occurred. Please try again."
+      );
+      console.error(error);
     }
   };
 
@@ -85,12 +95,16 @@ function TenantLogin() {
               <Link to={"/tenant-forgot-password"}>
                 <button
                   type="button"
-                  onClick={() => setShowForgotModal(true)}
                   className="text-sm text-blue-500 hover:text-blue-400 cursor-pointer whitespace-nowrap"
                 >
                   Forgot password?
                 </button>
               </Link>
+            </div>
+            <div className="mx-auto w-full flex justify-center items-center">
+              {error && (
+                <div className="text-red-500 text-sm mt-2">{error}</div>
+              )}
             </div>
 
             <button

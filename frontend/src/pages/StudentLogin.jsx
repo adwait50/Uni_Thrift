@@ -9,6 +9,7 @@ function StudentLogin() {
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showForgotModal, setShowForgotModal] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,11 +18,15 @@ function StudentLogin() {
         `${import.meta.env.VITE_BASE_URL}/api/students/login`,
         { studentEmail: email, password }
       );
+      console.log(response);
       if (response.status === 200) {
         localStorage.setItem("token", response.data.token);
       }
       console.log(response);
     } catch (error) {
+      setError(
+        error.response?.data?.message || "An error occurred. Please try again."
+      );
       console.error(error);
     }
   };
@@ -104,7 +109,11 @@ function StudentLogin() {
                 </button>
               </Link>
             </div>
-
+            <div className="mx-auto w-full flex justify-center items-center">
+              {error && (
+                <div className="text-red-500 text-sm mt-2">{error}</div>
+              )}
+            </div>
             <button
               type="submit"
               className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 !rounded-button whitespace-nowrap cursor-pointer"
