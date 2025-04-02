@@ -20,7 +20,7 @@ app.use(
 app.use(express.json());
 
 mongoose.connect(
-  "mongodb+srv://Ad_admin:rTotQIYvhqGW9Hkj@cluster0.wgqj7.mongodb.net/Uni_Thrift",
+  "",
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
