@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const tenantAuth = require('../../Middlewares/authTenantMiddleware.js');
 const sendEmail = require('../../utils/emailService.js');
 const tenantUpload = require('../../Utils/multer.js');
+const TenantAd = require('../../Models/TenantAd.js');
 const fs = require('fs');
 const path = require('path');
 const generateOTP = () => {
@@ -205,5 +206,79 @@ router.get('/dashboard',tenantAuth, async (req, res) => {
       res.status(500).json({ message: 'Server error' });
     }
   });
+
+router.post('/post-an-ad', tenantAuth,tenantUpload.single('propertyPic'), async(req, res) => {
+    try{
+        const {title, description, rent, address, type} = req.body;
+
+        if (!req.file) {
+            return res.status(400).json({ message: 'Image proof is required' });
+        }
+
+        const tenantAd = new TenantAd({
+            title,
+            description,
+            rent,
+            address,
+            type,
+            propertyPic: req.file.path,
+            status
+        });
+
+        await tenantAd.save();
+
+        res.status(201).json({ 
+            message: 'Ad posted successfully'
+        });
+    }
+
+    catch (error) {
+        // Clean up file if error occurs
+        if (req.file) {
+            fs.unlinkSync(req.file.path);
+        }
+        res.status(500).json({ message: 'Ad posting Failed' });
+    }
+});
+
+router.get('/ads', async (req, res) => {
+    try {
+        const ads = await TenantAd.find(); 
+        res.status(200).json(ads); 
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to fetch ads' });
+    }
+});
+
+router.put('/ads/:id', async (req, res) => {
+    const { title, description, rent, address, type } = req.body;
+    try {
+        const updatedAd = await TenantAd.findByIdAndUpdate(
+            req.params.id,
+            { title, description, rent, address, type },
+            { new: true } // Return the updated document
+        );
+        if (!updatedAd) {
+            return res.status(404).json({ message: 'Ad not found' });
+        }
+        res.status(200).json(updatedAd);
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to update ad' });
+    }
+});
+
+router.delete('/ads/:id', async (req, res) => {
+    try {
+        const deletedAd = await TenantAd.findByIdAndDelete(req.params.id);
+        if (!deletedAd) {
+            return res.status(404).json({ message: 'Ad not found' });
+        }
+        res.status(200).json({ message: 'Ad deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to delete ad' });
+    }
+});
+
+
 
 module.exports = router; 

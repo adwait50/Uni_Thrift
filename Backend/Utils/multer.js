@@ -6,7 +6,9 @@ const storage = multer.diskStorage({
         // Choose directory based on route
         const dir = file.fieldname === 'proofOfAdmission' 
             ? 'uploads/student-documents/'
-            : 'uploads/tenant-documents/';
+            : file.fieldname === 'tenantAd' // New condition for tenantAd
+                ? 'uploads/tenant-documents/tenantAd/' // Separate folder for tenantAd
+                : 'uploads/tenant-documents/';
         cb(null, dir);
     },
     filename: (req, file, cb) => {

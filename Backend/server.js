@@ -10,7 +10,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5173", // Replace with your frontend URL
+    origin: "http://localhost:5173", 
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -19,9 +19,9 @@ app.use(
 
 app.use(express.json());
 
-mongoose.connect('mongodb+srv://Ad_admin:rTotQIYvhqGW9Hkj@cluster0.wgqj7.mongodb.net/Uni_Thrift', {
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true 
 });
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
